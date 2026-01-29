@@ -8,7 +8,7 @@ Defines two tables:
 
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, create_engine
+from sqlalchemy import Column, DateTime, Index, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 Base = declarative_base()
@@ -23,6 +23,10 @@ class PlayerCount(Base):
     player_count = Column(Integer, nullable=False)
     game = Column(String, nullable=False)
     timestamp = Column(DateTime, default=datetime.now)
+
+    __table_args__ = (
+        Index("ix_playercount_game_timestamp", "game", "timestamp"),
+    )
 
     def __repr__(self):
         return (
@@ -44,6 +48,11 @@ class PlayerCountByWorld(Base):
     type = Column(String)
     activity = Column(String)
     timestamp = Column(DateTime, default=datetime.now)
+
+    __table_args__ = (
+        Index("ix_playercountbyworld_timestamp", "timestamp"),
+        Index("ix_playercountbyworld_world_timestamp", "world", "timestamp"),
+    )
 
     def __repr__(self):
         return (
